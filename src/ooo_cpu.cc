@@ -156,6 +156,15 @@ bool O3_CPU::do_predict_branch(ooo_model_instr& arch_instr)
   if (arch_instr.branch_prediction == 0)
     predicted_branch_target = 0;
 
+  // ORACLE predictor
+  // We think that the prediction is always right (if branch CONDITIONAL)
+  // We look in the FUTURE o_o
+  if (arch_instr.branch_type == BRANCH_CONDITIONAL) {
+    arch_instr.branch_prediction = arch_instr.branch_taken;
+    predicted_branch_target = arch_instr.branch_target;
+  }
+  // End of edits
+
   if (arch_instr.is_branch) {
     if constexpr (champsim::debug_print) {
       fmt::print("[BRANCH] instr_id: {} ip: {:#x} taken: {}\n", arch_instr.instr_id, arch_instr.ip, arch_instr.branch_taken);
